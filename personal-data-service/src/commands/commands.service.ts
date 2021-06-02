@@ -1,17 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
-import got from 'got';
 import { RunDto } from './dto/run.dto';
-import { GoRestResponse } from './interfaces/go-rest-response';
-import { transformPersonalData } from './common/transform';
-import {connect} from 'amqplib'
+import { transformPersonalData } from '../common/transform';
+import { connect } from 'amqplib'
+import { HttpClient } from 'src/common/httpClient';
 
 @Injectable()
 export class CommandsService {
   private readonly logger = new Logger(CommandsService.name);
 
+  constructor(private readonly httpClient: HttpClient) { }
+
   async run(runDto: RunDto): Promise<void> {
-    const body = await got(`https://gorest.co.in/public-api/users/${runDto.id}`).json() as GoRestResponse;
-    const transformedData = transformPersonalData(body.data)
+    const personalData = await this.httpClient.getPersonalData(runDto.id)
+    const transformedData = transformPersonalData(personalData)
     const connection = await connect(process.env.AMQP)
     const channel = await connection.createChannel()
     channel.sendToQueue(process.env.QUEUE, Buffer.from(JSON.stringify(transformedData)))

@@ -1,5 +1,5 @@
-import { PersonalData } from "../interfaces/personal-data"
-import { PersonalDataTransformed } from "../interfaces/personal-data-transformed"
+import { PersonalData } from "../commands/interfaces/personal-data"
+import { PersonalDataTransformed } from "../commands/interfaces/personal-data-transformed"
 import { v4 as uuidv4 } from 'uuid';
 
 export const transformPersonalData = (personalData: PersonalData): PersonalDataTransformed  => {
