@@ -1,4 +1,4 @@
-import { PersonalData } from "./personal-data"
+import { PersonalData } from './personal-data';
 
 export class GoRestResponse {
   code: number;
