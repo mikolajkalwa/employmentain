@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  personal-data-service:
+    build: ./personal-data-service
+    depends_on:
+      - rabbit
+    command: ["./wait-for-it.sh", "rabbit:5672", "--", "node", "dist/main.js"]
+    environment:
+      - PORT=3000
+      - QUEUE=PERSONAL_DATA
+      - AMQP=amqp://rabbit:5672
+    ports:
+      - "3000:3000"
+  gather-data-service:
+    build: ./gather-data-service
+    depends_on:
+      - rabbit
+    command: ["./wait-for-it.sh", "rabbit:5672", "--", "node", "index.js"]
+    environment:
+      - QUEUE=PERSONAL_DATA
+      - AMQP=amqp://rabbit:5672
+  rabbit:
+    image: rabbitmq:3-alpine
