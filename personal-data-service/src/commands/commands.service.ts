@@ -32,6 +32,12 @@ export class CommandsService {
       personalDataServiceResponse.data as PersonalData,
     );
 
+    this.logger.log(
+      `Transformed ${JSON.stringify(
+        personalDataServiceResponse.data,
+      )} into ${JSON.stringify(transformedData)}`,
+    );
+
     await this.messageBroker.putOnQueue(JSON.stringify(transformedData));
   }
 }
