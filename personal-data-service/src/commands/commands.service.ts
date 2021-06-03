@@ -2,8 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { RunDto } from './dto/run.dto';
 import { transformPersonalData } from '../common/transform';
 
-import { HttpClient } from 'src/common/httpClient';
-import { MessageBroker } from 'src/common/messageBroker';
+import { HttpClient } from '../common/httpClient';
+import { MessageBroker } from '../common/messageBroker';
+import { PersonalData } from './interfaces/personal-data';
 
 @Injectable()
 export class CommandsService {
@@ -28,10 +29,9 @@ export class CommandsService {
     }
 
     const transformedData = transformPersonalData(
-      personalDataServiceResponse.data,
+      personalDataServiceResponse.data as PersonalData,
     );
 
     await this.messageBroker.putOnQueue(JSON.stringify(transformedData));
-    this.logger.log(JSON.stringify(transformedData));
   }
 }

@@ -13,7 +13,7 @@ import { RunDto } from './dto/run.dto';
 export class CommandsController {
   constructor(private readonly commandService: CommandsService) {}
 
-  @Post()
+  @Post('run')
   @HttpCode(HttpStatus.ACCEPTED)
   run(@Body(new ValidationPipe()) runDto: RunDto) {
     this.commandService.run(runDto);

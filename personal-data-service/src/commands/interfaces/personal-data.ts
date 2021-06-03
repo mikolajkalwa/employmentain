@@ -4,6 +4,10 @@ export class PersonalData {
   email: string;
   gender: string;
   status: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
+
+  constructor(partial: Partial<PersonalData>) {
+    Object.assign(this, partial);
+  }
 }
