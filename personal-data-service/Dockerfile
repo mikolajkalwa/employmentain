@@ -11,6 +11,6 @@ WORKDIR /usr/src/app
 ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh ./
 RUN chmod +x ./wait-for-it.sh
 COPY --from=build /usr/src/app/package*.json ./
-RUN npm ci --only=production
+RUN npm ci --only=production && npm cache clean --force
 COPY --from=build /usr/src/app/dist ./dist
 CMD ["node", "dist/main.js"]
