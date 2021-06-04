@@ -1,5 +1,5 @@
-import { PersonalData } from '../commands/interfaces/personal-data';
-import { PersonalDataTransformed } from '../commands/interfaces/personal-data-transformed';
+import { PersonalData } from '../commands/models/personal-data';
+import { PersonalDataTransformed } from '../commands/models/personal-data-transformed';
 import { transformPersonalData } from './transform';
 
 jest.mock('uuid', () => ({

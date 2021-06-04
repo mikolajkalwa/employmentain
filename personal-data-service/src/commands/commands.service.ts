@@ -4,7 +4,7 @@ import { transformPersonalData } from '../common/transform';
 
 import { HttpClient } from '../common/httpClient';
 import { MessageBroker } from '../common/messageBroker';
-import { PersonalData } from './interfaces/personal-data';
+import { PersonalData } from './models/personal-data';
 import got from 'got/dist/source';
 
 @Injectable()

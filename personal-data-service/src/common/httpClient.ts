@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import got from 'got';
-import { GoRestResponse } from 'src/commands/interfaces/go-rest-response';
+import { GoRestResponse } from 'src/commands/models/go-rest-response';
 
 @Injectable()
 export class HttpClient {
