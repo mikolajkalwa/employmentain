@@ -42,6 +42,17 @@ describe('CommandsService', () => {
     expect(messageBrokerSpy.mock.calls.length).toBe(0);
   });
 
+  it('should not proceed if http client promise rejects', async () => {
+    jest.spyOn(httpClient, 'getPersonalData').mockImplementation(() => {
+      return Promise.reject();
+    });
+    const messageBrokerSpy = jest.spyOn(messageBroker, 'putOnQueue');
+
+    await service.run({ id: 110 });
+
+    expect(messageBrokerSpy.mock.calls.length).toBe(0);
+  });
+
   it('should proceed if third party service returns user data', async () => {
     jest.spyOn(httpClient, 'getPersonalData').mockImplementation(() => {
       return Promise.resolve({
@@ -62,5 +73,13 @@ describe('CommandsService', () => {
     await service.run({ id: 110 });
 
     expect(messageBrokerSpy.mock.calls.length).toBe(1);
+  });
+
+  it('should not throw if httpClient throws an error', async () => {
+    jest.spyOn(httpClient, 'getPersonalData').mockImplementation(() => {
+      return Promise.reject();
+    });
+
+    await expect(service.run({ id: 110 })).resolves.toBeUndefined();
   });
 });
