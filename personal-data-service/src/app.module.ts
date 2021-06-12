@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CommandsModule } from './commands/commands.module';
 import { LoggingInterceptor } from './common/logging.interceptor';
 
 @Module({
-  imports: [CommandsModule],
+  imports: [ConfigModule.forRoot(), CommandsModule],
   controllers: [],
   providers: [
     {

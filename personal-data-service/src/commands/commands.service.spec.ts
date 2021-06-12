@@ -1,24 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpClient } from '../common/httpClient';
-import { MessageBroker } from '../common/messageBroker';
 import { CommandsService } from './commands.service';
-
-jest.mock('../common/messageBroker');
 
 describe('CommandsService', () => {
   let service: CommandsService;
-  let messageBroker: MessageBroker;
   let httpClient: HttpClient;
+  let brokerServiceMock: { emit: any };
 
   beforeEach(async () => {
     jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CommandsService, MessageBroker, HttpClient],
+      providers: [
+        CommandsService,
+        HttpClient,
+        {
+          provide: 'RABBITMQ_SERVICE',
+          useValue: {
+            emit: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<CommandsService>(CommandsService);
-    messageBroker = module.get<MessageBroker>(MessageBroker);
     httpClient = module.get<HttpClient>(HttpClient);
+    brokerServiceMock = module.get('RABBITMQ_SERVICE');
   });
 
   it('should be defined', () => {
@@ -35,22 +42,20 @@ describe('CommandsService', () => {
         },
       });
     });
-    const messageBrokerSpy = jest.spyOn(messageBroker, 'putOnQueue');
 
     await service.run({ id: 110 });
 
-    expect(messageBrokerSpy.mock.calls.length).toBe(0);
+    expect(brokerServiceMock.emit).not.toHaveBeenCalled();
   });
 
   it('should not proceed if http client promise rejects', async () => {
     jest.spyOn(httpClient, 'getPersonalData').mockImplementation(() => {
       return Promise.reject();
     });
-    const messageBrokerSpy = jest.spyOn(messageBroker, 'putOnQueue');
 
     await service.run({ id: 110 });
 
-    expect(messageBrokerSpy.mock.calls.length).toBe(0);
+    expect(brokerServiceMock.emit).not.toHaveBeenCalled();
   });
 
   it('should proceed if third party service returns user data', async () => {
@@ -69,10 +74,9 @@ describe('CommandsService', () => {
         },
       });
     });
-    const messageBrokerSpy = jest.spyOn(messageBroker, 'putOnQueue');
     await service.run({ id: 110 });
 
-    expect(messageBrokerSpy.mock.calls.length).toBe(1);
+    expect(brokerServiceMock.emit).toHaveBeenCalled();
   });
 
   it('should not throw if httpClient throws an error', async () => {

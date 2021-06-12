@@ -1,11 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { RunDto } from './dto/run.dto';
 import { transformPersonalData } from '../common/transform';
 
 import { HttpClient } from '../common/httpClient';
-import { MessageBroker } from '../common/messageBroker';
 import { PersonalData } from './models/personal-data';
 import got from 'got/dist/source';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class CommandsService {
@@ -13,7 +13,7 @@ export class CommandsService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly messageBroker: MessageBroker,
+    @Inject('RABBITMQ_SERVICE') private readonly brokerService: ClientProxy,
   ) {}
 
   async run(runDto: RunDto): Promise<void> {
@@ -40,7 +40,7 @@ export class CommandsService {
         )} into ${JSON.stringify(transformedData)}`,
       );
 
-      await this.messageBroker.putOnQueue(JSON.stringify(transformedData));
+      this.brokerService.emit('user', JSON.stringify(transformedData));
     } catch (err) {
       if (err instanceof got.RequestError) {
         this.logger.error(
