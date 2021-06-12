@@ -16,7 +16,7 @@ $ npm install
 
 ## Environment Variables
 
-To run this project, you will need to the following environment variables:
+To run this project, you will need the following environment variables:
 
 `PORT` - Port on which API should be run
 

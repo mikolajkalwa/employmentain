@@ -12,7 +12,7 @@ $ npm install
 
 ## Environment Variables
 
-To run this project, you will need to the following environment variables (it's possible to set them inside `.env` file):
+To run this project, you will need the following environment variables (it's possible to set them inside `.env` file):
 
 `AMQP` - RabbitMQ address
 

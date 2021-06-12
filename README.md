@@ -10,7 +10,7 @@ The easiest way to run the application is to start it with docker:
 $ docker compose up
 ```
 
-The Personal Data Service listens on port 3000. It exposes one endpoint: `localhost:3000/api/v1/commands/run` which accepts POST requests. The body should contain JSON object with one file `id` in range 100-120.
+The Personal Data Service listens on port 3000. It exposes one endpoint: `localhost:3000/api/v1/commands/run` which accepts POST requests. The body should contain JSON object with one field `id` in range 100-120.
 
 Example:
 ```json
